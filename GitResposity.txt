@@ -21,6 +21,7 @@ git remote add orgin git@github.com:smallbal/learnGit.git
 就将本地的仓库迁移导了github上的learngit仓库中。这一条是教程中的命令。github在创建好一个resposity后提示的迁移命令是：
 git remote add origin https://github.com/smallbal/learnGit.git
 不同在于网址，我用的是github上给的，后面也因为这样出现了一些变化。
+Github给出的网址不止一个，所以才会有上面两条命令。实际上，Git支持多种协议，https 出了速度慢意外，最大的麻烦就是每次推送都必须输入口令。教程用的是ssh协议。
 orgin是我们本地仓库的同步名称，默认为origin,当然这个可以修改。后面的网址就是推送的目的地。
   在迁移完成后，我们就可以把本地苦短内容推送到远程库中，使用：
 git push -u origin master
