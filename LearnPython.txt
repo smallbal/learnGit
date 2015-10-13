@@ -1,0 +1,50 @@
+生成器
+
+  成器(generator)是存储公式来存储信息的一种机制，其相对的语法是List.list在存储元素时是将所需的元素都开辟内存并存储起来。这样在对于使用不是全部的元素时相对来说很消耗空间。生成器则是保存使用元素的大小规律即算法来存储信息的，这样每次查询元素时，生成器就会通过算法推算出所需元素。
+g = [x*x for x in range(10)] #创建一个list，每个元素是x^2,使用[]
+k = (x*x for x in range(10)] #创建一个generator,k存储的是算法，使用()
+
+  需要查询generator内部元素时可以使用next()函数（注意不是方法）。
+>>>next(k)
+0
+>>>next(k)
+1
+>>>next(k)
+4
+.
+.
+.
+>>>next(k)
+81
+>>>next(k)
+Traceback(most recent call last):
+ File"<stdin>",line 1 ,in<module>
+StopIteration
+
+  以上方法虽然有效但很麻烦，这样可以使用循环操作，注意一下语句细节：
+k = (x*x for x in range(10))
+for n in g:
+    print(n) #这里直接使用print(next(g))只能打印1 9 25 49 81
+#   print(next(g)) 这里如果加上这句则输出正常，奇怪
+
+  生成generator的另一种方法是使用yield关键字，例如使用函数生成一个斐波拉契generator：
+def fib(max):
+  n,a,b = 0,1,1
+  while n<max:
+    yield b
+    a,b=b,a+b
+    n = n+1
+  return 'done'
+f = fib(6) #这样就使用函数生成并返回一个generator给f.
+这里，最难理解的就是generator和函数的执行流程不一样。函数是顺序执行，遇到return语句或者最后一行函数语句就返回。而变成generator的函数，在每次调用next()的时候执行，遇到yield语句返回，再次执行时从上次返回的yield语句处继续执行。
+
+举个简单的例子，定义一个generator，依次返回数字1，3，5：
+
+def odd():
+    print('step 1')
+    yield 1
+    print('step 2')
+    yield(3)
+    print('step 3')
+    yield(5)
+
