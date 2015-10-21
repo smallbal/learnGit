@@ -46,4 +46,3 @@ class Coords:
         self.y2 = y2
 
 
- 
