@@ -1,0 +1,14 @@
+创建与合并分支
+
+分支的创建：
+$git checkout -b dev 
+Switch to a new branch 'dev'
+$git commit -m "D"
+$git merge dev
+$git branch -d dev
+
+以上的一系列命令的含义具体为：
+创建一个新的分支'dev'并将HEAD指向'dev'（HEAD会在这条命令后自动指向dev）；
+提交一次版本库并标注为“D”，这时提交的是'dev'分支的更改，原来master分支没有变化；
+将
+	
