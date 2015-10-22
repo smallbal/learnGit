@@ -18,7 +18,7 @@ class Game:
         self.tk.update()
         self.canvas_height = self.canvas.winfo_height()
         self.canvas_width = self.canvas.winfo_width()
-        self.bg = PhotoImage(file="background.gif")
+        self.bg = PhotoImage(file="./FUCK/background.gif")
         w = self.bg.width()
         h = self.bg.height()
         for x in range(0,5):
@@ -164,11 +164,12 @@ class Man(Sprite):
         if self.y == 0:
             self.y = -4
             self.jump_count = 0
-            self.jump.status = True
+            self.jump_status = True
 
     def animate(self):  # 人物动画动作设定
         if self.x != 0 and self.y == 0 \
                 and time.time() - self.last_time > 0.1:
+            self.current_image += self.current_image_add
             if self.current_image >= 2:
                 self.current_image_add = -1
             elif self.current_image <= 0:
@@ -193,8 +194,8 @@ class Man(Sprite):
         xy = self.game.canvas.coords(self.image)
         self.coordinates.x1 = xy[0]
         self.coordinates.y1 = xy[1]
-        self.coordinates.x2 = xy[2]
-        self.coordinates.y2 = xy[3]
+        self.coordinates.x2 = xy[0] + 27
+        self.coordinates.y2 = xy[1] + 30
         return self.coordinates
 
     def move(self):
@@ -218,13 +219,13 @@ class Man(Sprite):
         if self.y > 0 and mans_co.y2 >= self.game.canvas_height:
             not_bottom = False
             self.y = 0
-        elif self.y > 0 and mans_co.y1 <= 0:
+        elif self.y < 0 and mans_co.y1 <= 0:
             not_top = False
             self.y = 4  # 撞到游戏框顶端马上向下反弹
-        if self.x > 0 and mans_co >= self.game.canvas_width:
+        if self.x > 0 and mans_co.x2 >= self.game.canvas_width:
             not_right = False
             self.x = 0
-        elif self.x < 0 and mans_co <= 0:
+        elif self.x < 0 and mans_co.x1 <= 0:
             not_left = False
             self.x = 0
         else:
@@ -236,12 +237,31 @@ class Man(Sprite):
             sprite_co = sprite.coords()
             if self.y > 0 and collision_bottom(mans_co, sprite_co, 4):
                 self.y = sprite_co.y1 - mans_co.y2
-            self.game.canvas.move(self.image, self.x, self.y)
+        self.game.canvas.move(self.image, self.x, self.y)
 
 
 jump_game = Game()
 platform1 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 0, 480, 100, 10)
+platform2 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 150, 440, 100, 10)
+platform3 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 300, 400, 100, 10)
+platform4 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 300, 160, 100, 10)
+platform5 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 175, 350, 66, 10)
+platform6 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 50, 300, 66, 10)
+platform7 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 170, 120, 66, 10)
+platform8 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 45, 60, 66, 10)
+platform9 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 200, 270, 100,10)
+platform10 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 330, 210, 100, 10)
 jump_game.sprites.append(platform1)
+jump_game.sprites.append(platform2)
+jump_game.sprites.append(platform3)
+jump_game.sprites.append(platform4)
+jump_game.sprites.append(platform5)
+jump_game.sprites.append(platform6)
+jump_game.sprites.append(platform7)
+jump_game.sprites.append(platform8)
+jump_game.sprites.append(platform9)
+jump_game.sprites.append(platform10)
+
 stick_man = Man(jump_game)
 jump_game.sprites.append(stick_man)
 
