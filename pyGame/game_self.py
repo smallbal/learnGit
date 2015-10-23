@@ -174,17 +174,19 @@ class Man(Sprite):
                 self.current_image_add = -1
             elif self.current_image <= 0:
                 self.current_image_add = 1
-            else:
-                self.current_image_add = 0
+            #else:
+                #self.current_image_add = 0
         if self.x < 0:
             if self.y != 0:
                 self.game.canvas.itemconfig(self.image, image=self.image_left[2])
             else:
+            #   print('Left Flash',self.current_image, self.current_image_add)
                 self.game.canvas.itemconfig(self.image, image=self.image_left[self.current_image])
         elif self.x > 0:
             if self.y != 0:
                 self.game.canvas.itemconfig(self.image, image=self.image_right[2])
             else:
+            #    print('Right Flash', self.current_image, self.current_image_add)
                 self.game.canvas.itemconfig(self.image, image=self.image_right[self.current_image])
         else:
             if self.y == 0:
