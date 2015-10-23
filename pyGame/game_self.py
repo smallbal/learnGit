@@ -8,7 +8,7 @@ import time
 
 
 class Game:
-    def __init__(self):
+   def __init__(self):
         self.tk = Tk()
         self.tk.title("Run and Fucking escape!")
         self.tk.resizable(0, 0)
@@ -218,13 +218,16 @@ class Man(Sprite):
         on_left = False
         on_right = False
         on_platform = False
+        on_falling = True
         # 游戏框边缘冲突检测
         if self.y > 0 and mans_co.y2 >= self.game.canvas_height:  # 是否到框底
             on_bottom = True
             self.y = 0
+            print("on bottom")
         elif self.y < 0 and mans_co.y1 <= 0:  # 是否到框顶
             on_top = True
             self.y = 4  # 撞到游戏框顶端马上向下反弹
+            print("on top")
         if self.x > 0 and mans_co.x2 >= self.game.canvas_width:  # 是否到框右边
             on_right = True
             self.x = 0
@@ -240,8 +243,9 @@ class Man(Sprite):
             sprite_co = sprite.coords()
             if self.y > 0 and collision_bottom(mans_co, sprite_co, 4):
                 self.y = sprite_co.y1 - mans_co.y2
+                on_bottom = False
                 on_platform = True
-
+                print('on platform')
         self.game.canvas.move(self.image, self.x, self.y)
 
 

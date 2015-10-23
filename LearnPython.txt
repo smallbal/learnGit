@@ -1,4 +1,4 @@
-生成器
+～～～～～～～～～～～～～～生成器～～～～～～～～～～～～～～～～～～～～～～
 
   成器(generator)是存储公式来存储信息的一种机制，其相对的语法是List.list在存储元素时是将所需的元素都开辟内存并存储起来。这样在对于使用不是全部的元素时相对来说很消耗空间。生成器则是保存使用元素的大小规律即算法来存储信息的，这样每次查询元素时，生成器就会通过算法推算出所需元素。
 g = [x*x for x in range(10)] #创建一个list，每个元素是x^2,使用[]
@@ -47,4 +47,71 @@ def odd():
     yield(3)
     print('step 3')
     yield(5)
+
+
+～～～～～～～～～～～～～～～函数～～～～～～～～～～～～～～～～～～～～～～
+带有默认参数的函数：
+		函数的默认参数在定义的时候就一定创建（不想别的语言此时只是声明）。所以，
+def add_end(L=[]):
+	L.append('END')
+	return L
+这个函数在第一次调用时正常，但是第二次调用add_end()时会返回 ['END','END']，这是因为在函数定义的时候L就已经定义并指向一个list，所以在不加参数的调用这个函数（add_end())连续两次就会在这个list上添加两个END。所以——
+		默认参数一定要指向不变对象！！！
+def add_end(L=None):
+	if L == None:
+		L = []
+	L.append('END')
+	return L
+这样就行了。str 和 None 都是不变对象
+
+
+可变参数函数：
+在定义函数时，可以——
+def sum(*num):  # 求和函数
+	sum = 0
+	for x in num:
+		sum += x
+	return sum
+		在使用函数时，可以以此输入不定个数的数目，例如 sum(1,2) ; sum(1,4,6)。不定参数的机制是函数在被传入参数时将传入的参数组成一个 tuple 供函数内部使用。
+		但是如果参数是一个list 或者 tuple 时，直接调用sum([1,2])或者sum((1,2,3))就是错误的。python加入特定功能： 
+nums = [1,2,3]
+sum(*nums) # 等同于 sum(nums[0],num[1],num[2])
+注意函数定义和使用时 * 号的含义是不同的。 
+
+
+关键字 kw：
+关键字参数
+
+可变参数允许你传入0个或任意个参数，这些可变参数在函数调用时自动组装为一个tuple。而关键字参数允许你传入0个或任意个含参数名的参数，这些关键字参数在函数内部自动组装为一个dict。请看示例：
+
+def person(name, age, **kw):
+    print('name:', name, 'age:', age, 'other:', kw)
+
+函数person除了必选参数name和age外，还接受关键字参数kw。在调用该函数时，可以只传入必选参数：
+
+>>> person('Michael', 30)
+name: Michael age: 30 other: {}
+
+也可以传入任意个数的关键字参数：
+
+>>> person('Bob', 35, city='Beijing')
+name: Bob age: 35 other: {'city': 'Beijing'}
+>>> person('Adam', 45, gender='M', job='Engineer')
+name: Adam age: 45 other: {'gender': 'M', 'job': 'Engineer'}
+
+关键字参数有什么用？它可以扩展函数的功能。比如，在person函数里，我们保证能接收到name和age这两个参数，但是，如果调用者愿意提供更多的参数，我们也能收到。试想你正在做一个用户注册的功能，除了用户名和年龄是必填项外，其他都是可选项，利用关键字参数来定义这个函数就能满足注册的需求。
+
+和可变参数类似，也可以先组装出一个dict，然后，把该dict转换为关键字参数传进去：
+
+>>> extra = {'city': 'Beijing', 'job': 'Engineer'}
+>>> person('Jack', 24, city=extra['city'], job=extra['job'])
+name: Jack age: 24 other: {'city': 'Beijing', 'job': 'Engineer'}
+
+当然，上面复杂的调用可以用简化的写法：
+
+>>> extra = {'city': 'Beijing', 'job': 'Engineer'}
+>>> person('Jack', 24, **extra)
+name: Jack age: 24 other: {'city': 'Beijing', 'job': 'Engineer'}
+
+**extra表示把extra这个dict的所有key-value用关键字参数传入到函数的**kw参数，kw将获得一个dict，注意kw获得的dict是extra的一份拷贝，对kw的改动不会影响到函数外的extra。
 
