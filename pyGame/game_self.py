@@ -21,8 +21,8 @@ class Game:
         self.bg = PhotoImage(file="./FUCK/background.gif")
         w = self.bg.width()
         h = self.bg.height()
-        for x in range(0,5):
-            for y in range(0,5):
+        for x in range(0, 5):
+            for y in range(0, 5):
                 self.canvas.create_image(x*w, y*h, image=self.bg, anchor='nw')
         self.sprites = []  # sprite:精灵
         self.running = True
@@ -91,7 +91,7 @@ def collision_right(colliding, collided):
 
 
 # 底部碰撞检测
-def collision_bottom(colliding, collided, y=0):
+def collision_bottom(colliding, collided, y):
     if collision_x(colliding, collided):
         y_calc = colliding.y2 + y
         if collided.y1 <= y_calc <= collided.y2:
@@ -213,22 +213,23 @@ class Man(Sprite):
                     self.jump_count = 0
                     self.jump_status = False
         mans_co = self.coords()
-        not_bottom = True
-        not_top = True
-        not_left = True
-        not_right = True
+        on_bottom = False
+        on_top = False
+        on_left = False
+        on_right = False
+        on_platform = False
         # 游戏框边缘冲突检测
-        if self.y > 0 and mans_co.y2 >= self.game.canvas_height:
-            not_bottom = False
+        if self.y > 0 and mans_co.y2 >= self.game.canvas_height:  # 是否到框底
+            on_bottom = True
             self.y = 0
-        elif self.y < 0 and mans_co.y1 <= 0:
-            not_top = False
+        elif self.y < 0 and mans_co.y1 <= 0:  # 是否到框顶
+            on_top = True
             self.y = 4  # 撞到游戏框顶端马上向下反弹
-        if self.x > 0 and mans_co.x2 >= self.game.canvas_width:
-            not_right = False
+        if self.x > 0 and mans_co.x2 >= self.game.canvas_width:  # 是否到框右边
+            on_right = True
             self.x = 0
-        elif self.x < 0 and mans_co.x1 <= 0:
-            not_left = False
+        elif self.x < 0 and mans_co.x1 <= 0:  # 是否到框左边
+            on_left = True
             self.x = 0
         else:
             pass
@@ -239,7 +240,10 @@ class Man(Sprite):
             sprite_co = sprite.coords()
             if self.y > 0 and collision_bottom(mans_co, sprite_co, 4):
                 self.y = sprite_co.y1 - mans_co.y2
+                on_platform = True
+
         self.game.canvas.move(self.image, self.x, self.y)
+
 
 
 jump_game = Game()
@@ -251,7 +255,7 @@ platform5 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gi
 platform6 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 50, 300, 66, 10)
 platform7 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 170, 120, 66, 10)
 platform8 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 45, 60, 66, 10)
-platform9 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 200, 270, 100,10)
+platform9 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 200, 270, 100, 10)
 platform10 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 330, 210, 100, 10)
 jump_game.sprites.append(platform1)
 jump_game.sprites.append(platform2)
