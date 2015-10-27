@@ -27,7 +27,7 @@ class Game:
         self.sprites = []  # sprite:精灵
         self.running = True
 
-    def mainloop(self):
+   def mainloop(self):
         while True:
             if self.running:
                 for sprite in self.sprites:
@@ -174,19 +174,15 @@ class Man(Sprite):
                 self.current_image_add = -1
             elif self.current_image <= 0:
                 self.current_image_add = 1
-            #else:
-                #self.current_image_add = 0
         if self.x < 0:
             if self.y != 0:
                 self.game.canvas.itemconfig(self.image, image=self.image_left[2])
             else:
-            #   print('Left Flash',self.current_image, self.current_image_add)
                 self.game.canvas.itemconfig(self.image, image=self.image_left[self.current_image])
         elif self.x > 0:
             if self.y != 0:
                 self.game.canvas.itemconfig(self.image, image=self.image_right[2])
             else:
-            #    print('Right Flash', self.current_image, self.current_image_add)
                 self.game.canvas.itemconfig(self.image, image=self.image_right[self.current_image])
         else:
             if self.y == 0:
@@ -246,8 +242,14 @@ class Man(Sprite):
                 on_bottom = False
                 on_platform = True
                 print('on platform')
+            if sprite_co.y1 - 1 < mans_co.y2 < sprite_co.y1 + 1 and self.y == 0:
+                if self.x > 0 and sprite_co.x2 - 1 < mans_co.x1 < sprite_co.x2 + 1:
+                    self.y = 4
+                elif self.x < 0 and sprite_co.x1 - 1 <= mans_co.x2 <= sprite_co.x1 + 1:
+                    # 当判断条件写成： sprite_co.x1 - 1 < mans_co.x2 < sprite_co.x1 +1 时，
+                    # 小人从平台左边落下的检测就会有bug
+                    self.y = 4
         self.game.canvas.move(self.image, self.x, self.y)
-
 
 
 jump_game = Game()
