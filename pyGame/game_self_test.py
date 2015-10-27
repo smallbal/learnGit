@@ -1,10 +1,13 @@
-__author__ = 'guest_zjr'
-# !/usr/bin/env python3
-# -*-coding:utf-8-*-
-
 from tkinter import *
 import random
 import time
+
+# !/usr/bin/env python3
+# -*-coding:utf-8-*-
+
+__author__ = 'guest_zjr'
+
+
 
 
 class Game:
@@ -141,11 +144,11 @@ class Man(Sprite):
             PhotoImage(file='./FUCK/kidR2.gif'),
             PhotoImage(file='./FUCK/kidR3.gif')
         ]
-        self.image = game.canvas.create_image(0, 450, image=self.image_left[1], anchor='nw')
+        self.image = game.canvas.create_image(20, 40, image=self.image_left[1], anchor='nw')
         self.current_image_add = 1  # 图片变换的顺序
         self.current_image = 1
-        self.x = -2
-        self.y = 0
+        self.x = 0
+        self.y = 4
         self.jump_status = False  # 当前小人是否激发了跳跃
         self.jump_count = 0  # 跳跃时间拍数
         self.last_time = time.time()
@@ -153,6 +156,13 @@ class Man(Sprite):
         game.canvas.bind_all('<KeyPress-Left>', self.turn_left)
         game.canvas.bind_all('<KeyPress-Right>', self.turn_right)
         game.canvas.bind_all('<space>', self.jump)
+
+        self.on_bottom = False
+        self.on_top = False
+        self.on_left = False
+        self.on_right = False
+        self.on_platform = False
+        self.on_falling = True
 
     def turn_left(self, event):
         self.x = -2
@@ -165,6 +175,7 @@ class Man(Sprite):
             self.y = -4
             self.jump_count = 0
             self.jump_status = True
+            self.on_falling = False
 
     def animate(self):  # 人物动画动作设定
         if self.x != 0 and self.y == 0 \
@@ -174,15 +185,19 @@ class Man(Sprite):
                 self.current_image_add = -1
             elif self.current_image <= 0:
                 self.current_image_add = 1
+            #else:
+                #self.current_image_add = 0
         if self.x < 0:
             if self.y != 0:
                 self.game.canvas.itemconfig(self.image, image=self.image_left[2])
             else:
+            #   print('Left Flash',self.current_image, self.current_image_add)
                 self.game.canvas.itemconfig(self.image, image=self.image_left[self.current_image])
         elif self.x > 0:
             if self.y != 0:
                 self.game.canvas.itemconfig(self.image, image=self.image_right[2])
             else:
+            #    print('Right Flash', self.current_image, self.current_image_add)
                 self.game.canvas.itemconfig(self.image, image=self.image_right[self.current_image])
         else:
             if self.y == 0:
@@ -198,58 +213,36 @@ class Man(Sprite):
 
     def move(self):
         self.animate()
-        if self.jump_status:
-            if self.y <= 0:
-                self.jump_count += 1
-                if self.jump_count >= 20:
-                    self.y = 4
-            if self.y > 0:
-                self.jump_count -= 1
-                if self.jump_count <= 0:
-                    self.jump_count = 0
-                    self.jump_status = False
         mans_co = self.coords()
-        on_bottom = False
-        on_top = False
-        on_left = False
-        on_right = False
-        on_platform = False
-        on_falling = True
-        # 游戏框边缘冲突检测
-        if self.y > 0 and mans_co.y2 >= self.game.canvas_height:  # 是否到框底
-            on_bottom = True
+        if self.y == 0 and (not self.on_platform) and (not self.on_bottom):
+            self.y = 4
+            self.on_falling = True
+        if self.y > 0 and mans_co.y2 >= self.game.canvas_height:
             self.y = 0
-            print("on bottom")
-        elif self.y < 0 and mans_co.y1 <= 0:  # 是否到框顶
-            on_top = True
-            self.y = 4  # 撞到游戏框顶端马上向下反弹
-            print("on top")
-        if self.x > 0 and mans_co.x2 >= self.game.canvas_width:  # 是否到框右边
-            on_right = True
-            self.x = 0
-        elif self.x < 0 and mans_co.x1 <= 0:  # 是否到框左边
-            on_left = True
-            self.x = 0
-        else:
-            pass
-        # 小人与游戏场景道具的碰撞检测
+            self.on_bottom = True
+            self.on_platform = False
+            self.on_falling = False
         for sprite in self.game.sprites:
             if sprite == self:
                 continue
-            sprite_co = sprite.coords()
-            if self.y > 0 and collision_bottom(mans_co, sprite_co, 4):
-                self.y = sprite_co.y1 - mans_co.y2
-                on_bottom = False
-                on_platform = True
-                print('on platform')
-            if sprite_co.y1 - 1 < mans_co.y2 < sprite_co.y1 + 1 and self.y == 0:
-                if self.x > 0 and sprite_co.x2 - 1 < mans_co.x1 < sprite_co.x2 + 1:
-                    self.y = 4
-                elif self.x < 0 and sprite_co.x1 - 1 <= mans_co.x2 <= sprite_co.x1 + 1:
-                    # 当判断条件写成： sprite_co.x1 - 1 < mans_co.x2 < sprite_co.x1 +1 时，
-                    # 小人从平台左边落下的检测就会有bug
-                    self.y = 4
+            sprite_co = sprite.coordinates
+            if self.y > 0 and collision_bottom(mans_co, sprite_co, 0):
+                self.y = 0
+                self.on_platform = True
+                self.on_bottom = False
+                self.on_falling = False
+                break
+            else:
+                self.on_platform = False
+                self.on_bottom = False
+                self.on_falling = True
+
+
+        if self.jump_status:
+            pass
         self.game.canvas.move(self.image, self.x, self.y)
+        print(self.y, self.on_platform, self.on_bottom, self.on_falling)
+
 
 
 jump_game = Game()
