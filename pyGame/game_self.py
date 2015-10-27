@@ -8,7 +8,7 @@ import time
 
 
 class Game:
-   def __init__(self):
+    def __init__(self):
         self.tk = Tk()
         self.tk.title("Run and Fucking escape!")
         self.tk.resizable(0, 0)
@@ -27,7 +27,7 @@ class Game:
         self.sprites = []  # sprite:精灵
         self.running = True
 
-   def mainloop(self):
+    def mainloop(self):
         while True:
             if self.running:
                 for sprite in self.sprites:
@@ -128,6 +128,29 @@ class PlatformSprite(Sprite):
         self.coordinates = Coords(x, y, x+width, y+height)
 
 
+class DoorSprite(Sprite):
+    def __init__(self, game, man, x, y):
+        Sprite.__init__(self, game)
+        self.photo_image = [
+            PhotoImage(file='./FUCK/door1.gif'),
+            PhotoImage(file='./FUCK/door2.gif')
+        ]
+        self.man = man
+        self.image = game.canvas.create_image(x, y, image=self.photo_image[0], anchor='nw')
+        self.coordinates = Coords(x, y, x+27, y+30)
+
+    def coords(self):
+        return self.coordinates
+
+    def move(self):
+        mans_co = self.man.coords()
+        if collision_left(mans_co, self.coordinates) \
+                or collision_right(mans_co, self.coordinates):
+            self.game.canvas.itemconfig(self.image, image=self.photo_image[1])
+        else:
+            self.game.canvas.itemconfig(self.image, image=self.photo_image[0])
+
+
 class Man(Sprite):
     def __init__(self, game):
         Sprite.__init__(self, game)
@@ -219,11 +242,9 @@ class Man(Sprite):
         if self.y > 0 and mans_co.y2 >= self.game.canvas_height:  # 是否到框底
             on_bottom = True
             self.y = 0
-            print("on bottom")
         elif self.y < 0 and mans_co.y1 <= 0:  # 是否到框顶
             on_top = True
             self.y = 4  # 撞到游戏框顶端马上向下反弹
-            print("on top")
         if self.x > 0 and mans_co.x2 >= self.game.canvas_width:  # 是否到框右边
             on_right = True
             self.x = 0
@@ -241,7 +262,6 @@ class Man(Sprite):
                 self.y = sprite_co.y1 - mans_co.y2
                 on_bottom = False
                 on_platform = True
-                print('on platform')
             if sprite_co.y1 - 1 < mans_co.y2 < sprite_co.y1 + 1 and self.y == 0:
                 if self.x > 0 and sprite_co.x2 - 1 < mans_co.x1 < sprite_co.x2 + 1:
                     self.y = 4
@@ -276,6 +296,9 @@ jump_game.sprites.append(platform10)
 
 stick_man = Man(jump_game)
 jump_game.sprites.append(stick_man)
+
+door = DoorSprite(jump_game, stick_man, 50, 30)
+jump_game.sprites.append(door)
 
 jump_game.mainloop()
 
