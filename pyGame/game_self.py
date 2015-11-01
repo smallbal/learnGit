@@ -1,10 +1,11 @@
+from tkinter import *
+import tkinter.messagebox as messagebox
+import time
+
 __author__ = 'guest_zjr'
 # !/usr/bin/env python3
 # -*-coding:utf-8-*-
 
-from tkinter import *
-import random
-import time
 
 
 class Game:
@@ -147,6 +148,14 @@ class DoorSprite(Sprite):
         if collision_left(mans_co, self.coordinates) \
                 or collision_right(mans_co, self.coordinates):
             self.game.canvas.itemconfig(self.image, image=self.photo_image[1])
+            # 弹出消息框提示
+            messagebox.showinfo('Win', 'You Get the Fucking Door!')
+            # 设置小人为静止状态
+            self.game.canvas.itemconfig(self.man.image, image=self.man.image_left[1])
+            self.man.x = 0
+            # 将小人移动到“下面”重新以便于重新玩。这里只用了move()方法，改进的地方很多，只是目前效果达到了。
+            self.game.canvas.move(self.man.image, 0, 400)
+
         else:
             self.game.canvas.itemconfig(self.image, image=self.photo_image[0])
 
@@ -263,9 +272,8 @@ class Man(Sprite):
                 on_bottom = False
                 on_platform = True
             if sprite_co.y1 - 1 < mans_co.y2 < sprite_co.y1 + 1 and self.y == 0:
-                if self.x > 0 and sprite_co.x2 - 1 < mans_co.x1 < sprite_co.x2 + 1:
-                    self.y = 4
-                elif self.x < 0 and sprite_co.x1 - 1 <= mans_co.x2 <= sprite_co.x1 + 1:
+                if (self.x > 0 and sprite_co.x2 - 1 < mans_co.x1 < sprite_co.x2 + 1) \
+                        or (self.x < 0 and sprite_co.x1 - 1 <= mans_co.x2 <= sprite_co.x1 + 1):
                     # 当判断条件写成： sprite_co.x1 - 1 < mans_co.x2 < sprite_co.x1 +1 时，
                     # 小人从平台左边落下的检测就会有bug
                     self.y = 4
@@ -273,16 +281,16 @@ class Man(Sprite):
 
 
 jump_game = Game()
-platform1 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 0, 480, 100, 10)
-platform2 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 150, 440, 100, 10)
-platform3 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 300, 400, 100, 10)
-platform4 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 300, 160, 100, 10)
-platform5 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 175, 350, 66, 10)
-platform6 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 50, 300, 66, 10)
-platform7 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 170, 120, 66, 10)
-platform8 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformMiddle.gif'), 45, 60, 66, 10)
-platform9 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 200, 270, 100, 10)
-platform10 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/plateformLong.gif'), 330, 210, 100, 10)
+platform1 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/platformLong.gif'), 0, 480, 100, 10)
+platform2 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/platformLong.gif'), 150, 440, 100, 10)
+platform3 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/platformLong.gif'), 300, 400, 100, 10)
+platform4 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/platformLong.gif'), 300, 160, 100, 10)
+platform5 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/platformMiddle.gif'), 175, 350, 66, 10)
+platform6 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/platformMiddle.gif'), 50, 300, 66, 10)
+platform7 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/platformMiddle.gif'), 170, 120, 66, 10)
+platform8 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/platformMiddle.gif'), 45, 60, 66, 10)
+platform9 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/platformLong.gif'), 200, 270, 100, 10)
+platform10 = PlatformSprite(jump_game, PhotoImage(file='./FUCK/platformLong.gif'), 330, 210, 100, 10)
 jump_game.sprites.append(platform1)
 jump_game.sprites.append(platform2)
 jump_game.sprites.append(platform3)
