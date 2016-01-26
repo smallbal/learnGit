@@ -8,7 +8,33 @@ $git merge dev
 $git branch -d dev
 
 以上的一系列命令的含义具体为：
-创建一个新的分支'dev'并将HEAD指向'dev'（HEAD会在这条命令后自动指向dev）；
+$git checkout -b dev
+创建一个新的分支'dev'并将HEAD指向'dev'（HEAD会在这条命令后自动指向dev）。这一条命令相当于：
+	$git branch dev
+	$git checkout dev #将HEAD指向dev分支，即切换分支
+
+$git commit -m "D"
 提交一次版本库并标注为“D”，这时提交的是'dev'分支的更改，原来master分支没有变化；
-将
-	
+
+$git merge dev
+将dev 分支合并到当前分支。例如：
+	$git chechkout master #切换到master分支
+	$git merge dev #将dev分支合并到master分支
+合并之后，当前分支就会跳到master分支处。
+
+%git banch -d dev
+删除分支dev
+
+
+查询分支状况和当前指向的分支可以使用指令：
+	$git branch
+	*linux
+	master
+此时有俩个分支linux 和master，当前HEAD指向linux分支（指向的分支前有符号*）
+
+___________________________________________________________________________
+——————————————————————————————————————————————————————————————————————————
+
+解决冲突
+
+
